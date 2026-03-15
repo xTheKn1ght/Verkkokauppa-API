@@ -9,7 +9,7 @@ public class SupplierAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="supplier_id", nullable=false)
     private Supplier supplier;
     @Column(nullable = false, columnDefinition="VARCHAR(255)")

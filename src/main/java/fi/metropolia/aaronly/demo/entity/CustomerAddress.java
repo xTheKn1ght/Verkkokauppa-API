@@ -19,7 +19,7 @@ public class CustomerAddress {
     private String city;
     private String country;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false, unique = true)
     private Customer customer;
 

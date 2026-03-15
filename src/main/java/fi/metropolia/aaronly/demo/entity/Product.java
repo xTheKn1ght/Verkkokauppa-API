@@ -28,7 +28,7 @@ public class Product {
     @JsonBackReference
     private ProductCategory category;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name= "product_supplier", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "supplier_id"))
     private Set<Supplier> suppliers = new HashSet<>();
 

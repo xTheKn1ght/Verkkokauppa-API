@@ -18,7 +18,7 @@ public class Supplier {
     private String phone;
     private String email;
 
-    @ManyToMany(mappedBy = "suppliers")
+    @ManyToMany(mappedBy = "suppliers", fetch =  FetchType.LAZY)
     @JsonBackReference
     private Set<Product> products = new HashSet<>();
 

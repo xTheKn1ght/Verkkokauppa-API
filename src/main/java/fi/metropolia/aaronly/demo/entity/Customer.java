@@ -23,7 +23,7 @@ public class Customer {
     private String email;
     private String phone;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CustomerAddress customerAddress;
 
     public Customer() {}

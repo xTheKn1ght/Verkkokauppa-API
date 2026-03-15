@@ -10,7 +10,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="customer_id", nullable = false)
     private Customer customer;
     @Basic(optional = false)
@@ -20,7 +20,7 @@ public class Order {
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date delivery_date;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="shipping_address_id")
     private CustomerAddress shippingAddress;
     @Column(columnDefinition = "VARCHAR(50)")

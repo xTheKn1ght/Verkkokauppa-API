@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 public class OrderItem {
     @EmbeddedId
     private OrderItemId id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("order_id")
     @JoinColumn(name="order_id")
     private Order order;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("product_id")
     @JoinColumn(name="product_id")
     private Product product;
