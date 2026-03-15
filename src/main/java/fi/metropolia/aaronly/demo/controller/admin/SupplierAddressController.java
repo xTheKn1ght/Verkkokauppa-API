@@ -1,6 +1,7 @@
 package fi.metropolia.aaronly.demo.controller.admin;
 
 
+import fi.metropolia.aaronly.demo.converter.SupplierAddressDTO;
 import fi.metropolia.aaronly.demo.entity.SupplierAddress;
 import fi.metropolia.aaronly.demo.service.SupplierAddressService;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,14 @@ public class SupplierAddressController {
         return supplierAddressService.getAll();
     }
     @PostMapping
-    public ResponseEntity<SupplierAddress> createSupplierAddress(@RequestBody SupplierAddress supplierAddress) {
-        SupplierAddress saved = supplierAddressService.save(supplierAddress);
+    public ResponseEntity<SupplierAddress> createSupplierAddress(@RequestBody SupplierAddressDTO dto) {
+        SupplierAddress saved = supplierAddressService.save(dto);
         return ResponseEntity.ok(saved);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<SupplierAddress> updateSupplierAddress(@PathVariable Integer id, @RequestBody SupplierAddress supplierAddress) {
+    public ResponseEntity<SupplierAddress> updateSupplierAddress(@PathVariable Integer id, @RequestBody SupplierAddressDTO dto) {
         try {
-            SupplierAddress updated = supplierAddressService.update(supplierAddress, id);
+            SupplierAddress updated = supplierAddressService.update(id, dto);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

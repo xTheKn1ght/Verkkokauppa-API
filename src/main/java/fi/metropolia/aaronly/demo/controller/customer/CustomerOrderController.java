@@ -1,9 +1,8 @@
 package fi.metropolia.aaronly.demo.controller.customer;
 
-import fi.metropolia.aaronly.demo.entity.Order;
-import fi.metropolia.aaronly.demo.entity.OrderItem;
-import fi.metropolia.aaronly.demo.entity.OrderItemId;
-import fi.metropolia.aaronly.demo.entity.Product;
+import fi.metropolia.aaronly.demo.converter.CustomerOrderDTO;
+import fi.metropolia.aaronly.demo.converter.OrderItemDTO;
+import fi.metropolia.aaronly.demo.entity.*;
 import fi.metropolia.aaronly.demo.repository.OrderItemRepository;
 import fi.metropolia.aaronly.demo.repository.OrderRepository;
 import fi.metropolia.aaronly.demo.repository.ProductRepository;
@@ -25,14 +24,20 @@ public class CustomerOrderController {
         return orderService.getAllOrders();
     }
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@RequestBody CustomerOrderDTO dto) {
+        Order order = new Order();
+        order.setStatus(dto.getStatus());
+        Customer customer = orderService.getCustomerById(dto.getCustomerId());
+        CustomerAddress address = orderService.getCustomerAddress(dto.getShippingAddressId());
+        order.setCustomer(customer);
+        order.setShippingAddress(address);
         return ResponseEntity.ok(orderService.createOrder(order));
     }
     @PostMapping("/{orderId}/items")
-    public ResponseEntity<OrderItem> createOrderItem(@PathVariable Integer orderId, @RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItem> createOrderItem(@PathVariable Integer orderId, @RequestBody OrderItemDTO dto) {
         try {
-            return ResponseEntity.ok(orderService.createOrderItem(orderId, orderItem));
-        }  catch (RuntimeException e) {
+            return ResponseEntity.ok(orderService.createOrderItem(orderId, dto));
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
         }
     }

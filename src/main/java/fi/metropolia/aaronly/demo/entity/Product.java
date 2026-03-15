@@ -87,6 +87,13 @@ public class Product {
     public Integer getVersion() {
         return version;
     }
+
+    public Set<Supplier> getSuppliers() {
+        return suppliers;
+    }
+    public void setSuppliers(Set<Supplier> suppliers) {
+        this.suppliers = suppliers;
+    }
     /*
     @PrePersist
     @PreUpdate

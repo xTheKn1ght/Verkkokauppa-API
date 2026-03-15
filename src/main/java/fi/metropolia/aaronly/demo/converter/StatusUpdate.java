@@ -1,4 +1,4 @@
-package fi.metropolia.aaronly.demo.DTO;
+package fi.metropolia.aaronly.demo.converter;
 
 public class StatusUpdate {
     private String status;

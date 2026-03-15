@@ -1,7 +1,6 @@
 package fi.metropolia.aaronly.demo.controller.admin;
 
 import fi.metropolia.aaronly.demo.entity.Supplier;
-import fi.metropolia.aaronly.demo.repository.SupplierRepository;
 import fi.metropolia.aaronly.demo.service.SupplierService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

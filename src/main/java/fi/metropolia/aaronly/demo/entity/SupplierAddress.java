@@ -58,4 +58,10 @@ public class SupplierAddress {
     public void setCountry(String country) {
         this.country = country;
     }
+    public Supplier getSupplier() {
+        return supplier;
+    }
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
 }

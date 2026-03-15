@@ -26,7 +26,7 @@ public class CustomerProductController {
         }
     }
     @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam(required = false) Double minPrice, @RequestParam(required = false) Integer minStock) {
-        return productService.searchProducts(minPrice, minStock);
+    public List<Product> searchProducts(@RequestParam(required = false) String name, @RequestParam(required = false) Double minPrice, @RequestParam(required = false) Integer minStock) {
+        return productService.searchProducts(name, minPrice, minStock);
     }
 }

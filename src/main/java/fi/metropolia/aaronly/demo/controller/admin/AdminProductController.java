@@ -1,5 +1,6 @@
 package fi.metropolia.aaronly.demo.controller.admin;
 
+import fi.metropolia.aaronly.demo.converter.ProductUpdateDTO;
 import fi.metropolia.aaronly.demo.entity.Product;
 import fi.metropolia.aaronly.demo.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,9 @@ public class AdminProductController {
         return productService.createProduct(product);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody Product product) {
-        try {
-            return ResponseEntity.ok(productService.updateProduct(id, product));
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody ProductUpdateDTO dto) {
+        try {Product updated = productService.updateProduct(id, dto);
+            return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

@@ -2,11 +2,10 @@ package fi.metropolia.aaronly.demo.controller.admin;
 
 import fi.metropolia.aaronly.demo.entity.Order;
 import fi.metropolia.aaronly.demo.service.OrderService;
-import fi.metropolia.aaronly.demo.DTO.StatusUpdate;
+import fi.metropolia.aaronly.demo.converter.StatusUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/orders")

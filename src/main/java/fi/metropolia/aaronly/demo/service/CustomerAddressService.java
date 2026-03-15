@@ -8,30 +8,44 @@ import java.util.List;
 
 @Service
 public class CustomerAddressService {
-    private CustomerAddressRepository customerAddressRepository;
+    private final CustomerAddressRepository customerAddressRepository;
     public CustomerAddressService(CustomerAddressRepository customerAddressRepository) {
         this.customerAddressRepository = customerAddressRepository;
     }
-    public List<CustomerAddress> getCustomerAdresses(){
+    public List<CustomerAddress> getAllAddresses() {
         return customerAddressRepository.findAll();
     }
-    public CustomerAddress saveCustomerAddress(CustomerAddress customerAddress){
-        return customerAddressRepository.save(customerAddress);
+    public CustomerAddress getAddressByCustomerId(Integer customerId) {
+        return customerAddressRepository.findByCustomer_Id(customerId).orElseThrow(() -> new RuntimeException("Address not found"));
     }
-    public CustomerAddress updateCustomerAddress(CustomerAddress customerAddress, Integer id){
-        if(!customerAddressRepository.existsById(id)){
-            throw new RuntimeException("Customer address not found");
+
+    public CustomerAddress saveOrUpdateAddress(CustomerAddress address) {
+        if (address.getCustomer() == null || address.getCustomer().getId() == null) {
+            throw new RuntimeException("Customer must be provided");
         }
-        customerAddress.setId(id);
-        return customerAddressRepository.save(customerAddress);
+        CustomerAddress existing = customerAddressRepository.findByCustomer_Id(address.getCustomer().getId())
+                .orElse(null);
+        if (existing != null) {
+            existing.setStreet_address(address.getStreet_address());
+            existing.setPostal_code(address.getPostal_code());
+            existing.setCity(address.getCity());
+            existing.setCountry(address.getCountry());
+            return customerAddressRepository.save(existing);
+        } else {
+            return customerAddressRepository.save(address);
+        }
     }
-    public void deleteCustomerAddress(Integer id){
-        if(!customerAddressRepository.existsById(id)){
-            throw new RuntimeException("Customer address not found");
+    public CustomerAddress updateAddress(Integer id, CustomerAddress address) {
+        if (!customerAddressRepository.existsById(id)) {
+            throw new RuntimeException("Address not found");
+        }
+        address.setId(id);
+        return customerAddressRepository.save(address);
+    }
+    public void deleteAddress(Integer id) {
+        if (!customerAddressRepository.existsById(id)) {
+            throw new RuntimeException("Address not found");
         }
         customerAddressRepository.deleteById(id);
-    }
-    public CustomerAddress getCustomerAddress(Integer id){
-        return customerAddressRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer address not found"));
     }
 }

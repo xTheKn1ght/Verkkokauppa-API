@@ -60,4 +60,10 @@ public class CustomerAddress {
     public void setCountry(String country) {
         this.country = country;
     }
+    public Customer getCustomer() {
+        return customer;
+    }
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

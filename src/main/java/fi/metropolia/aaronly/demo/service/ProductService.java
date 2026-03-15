@@ -1,7 +1,12 @@
 package fi.metropolia.aaronly.demo.service;
 
+import fi.metropolia.aaronly.demo.converter.ProductUpdateDTO;
 import fi.metropolia.aaronly.demo.entity.Product;
+import fi.metropolia.aaronly.demo.entity.ProductCategory;
+import fi.metropolia.aaronly.demo.entity.Supplier;
+import fi.metropolia.aaronly.demo.repository.ProductCategoryRepository;
 import fi.metropolia.aaronly.demo.repository.ProductRepository;
+import fi.metropolia.aaronly.demo.repository.SupplierRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -12,13 +17,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final SupplierRepository supplierRepository;
     private final EntityManager em;
-    public ProductService(ProductRepository productRepository, EntityManager em) {
+    public ProductService(ProductRepository productRepository,  ProductCategoryRepository productCategoryRepository, SupplierRepository supplierRepository, EntityManager em) {
         this.productRepository = productRepository;
+        this.productCategoryRepository = productCategoryRepository;
+        this.supplierRepository = supplierRepository;
         this.em = em;
     }
     public List<Product> getAllProducts() {
@@ -31,11 +42,21 @@ public class ProductService {
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
-    public Product updateProduct(Integer id, Product product) {
-        if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+    @Transactional
+    public Product updateProduct(Integer id, ProductUpdateDTO dto) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setStock_quantity(dto.getStock_quantity());
+        if(dto.getCategoryId() != null){
+            ProductCategory category = productCategoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+            product.setCategory(category);
         }
-        product.setId(id);
+        if (dto.getSupplierIds() != null && !dto.getSupplierIds().isEmpty()) {
+            Set<Supplier> suppliers = dto.getSupplierIds().stream().map(supplierId -> supplierRepository.findById(supplierId).orElseThrow(() -> new RuntimeException("Supplier not found"))).collect(Collectors.toSet());
+            product.setSuppliers(suppliers);
+        }
         return productRepository.save(product);
     }
     public void deleteProduct(Integer id) {
@@ -49,11 +70,14 @@ public class ProductService {
         productRepository.increaseAllPrices();
     }
     @Transactional
-    public List<Product> searchProducts(Double minPrice, Integer minStock) {
+    public List<Product> searchProducts(String name, Double minPrice, Integer minStock) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Product> cq = cb.createQuery(Product.class);
         Root<Product> root = cq.from(Product.class);
         List<Predicate> predicates = new ArrayList<>();
+        if (name != null && !name.isEmpty()) {
+            predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+        }
         if (minPrice != null) {
             predicates.add(cb.greaterThanOrEqualTo(root.get("price"), minPrice));
         }

@@ -12,34 +12,37 @@ public class CustomerCustomerAddressController {
     public CustomerCustomerAddressController(CustomerAddressService customerAddressService) {
         this.customerAddressService = customerAddressService;
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<CustomerAddress> getById(@PathVariable Integer id) {
-        try {
-            CustomerAddress address = customerAddressService.getCustomerAddress(id);
-            return ResponseEntity.ok(address);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    @PostMapping
-    public ResponseEntity<CustomerAddress> create(@RequestBody CustomerAddress customerAddress) {
-        CustomerAddress saved = customerAddressService.saveCustomerAddress(customerAddress);
-        return ResponseEntity.ok(saved);
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<CustomerAddress> update(@RequestBody CustomerAddress customerAddress, @PathVariable Integer id) {
-        try {
-            CustomerAddress updated = customerAddressService.updateCustomerAddress(customerAddress, id);
-            return ResponseEntity.ok(updated);
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CustomerAddress> get(@PathVariable Integer customerId) {
+        try {return ResponseEntity.ok(customerAddressService.getAddressByCustomerId(customerId));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @PostMapping
+    public ResponseEntity<CustomerAddress> saveOrUpdate(@RequestBody CustomerAddress address) {
+        try {CustomerAddress saved = customerAddressService.saveOrUpdateAddress(address);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity<CustomerAddress> update(@PathVariable Integer customerId, @RequestBody CustomerAddress address) {
+        try {address.setCustomer(address.getCustomer());
+            CustomerAddress updated = customerAddressService.saveOrUpdateAddress(address);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity<Void> delete(@PathVariable Integer customerId) {
         try {
-            customerAddressService.deleteCustomerAddress(id);
+            CustomerAddress existing = customerAddressService.getAddressByCustomerId(customerId);
+            customerAddressService.deleteAddress(existing.getId());
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
