@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("UPDATE Product p SET p.price = p.price * 1.1")
     int increaseAllPrices();
     List<Product> findAllByNameContainingIgnoreCase(String name);
-    /*
-    select p.name, sum(oi.quantity) as total_sold from orderitems oi join products p on oi.product_id = p.id group by p.id order by total_sold desc limit 25; eli top 25 myydyintä
-    */
+    @Query(value = """
+SELECT p.name, SUM(oi.quantity) as total_sold FROM orderitems oi JOIN products p ON oi.product_id = p.id GROUP BY p.id ORDER BY total_sold DESC LIMIT 25""", nativeQuery = true)
+    List<Object[]> getTopProducts();
 }

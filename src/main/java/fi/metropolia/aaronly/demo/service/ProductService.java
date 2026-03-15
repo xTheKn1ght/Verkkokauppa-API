@@ -21,13 +21,32 @@ public class ProductService {
         this.productRepository = productRepository;
         this.em = em;
     }
-    @Transactional
-    public void raisePrices() {
-        productRepository.increaseAllPrices();
-    }
-    
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+    public Product getProductById(Integer id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+    public Product updateProduct(Integer id, Product product) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Product not found with id: " + id);
+        }
+        product.setId(id);
+        return productRepository.save(product);
+    }
+    public void deleteProduct(Integer id) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Product not found with id: " + id);
+        }
+        productRepository.deleteById(id);
+    }
+    @Transactional
+    public void increasePrices() {
+        productRepository.increaseAllPrices();
     }
     @Transactional
     public List<Product> searchProducts(Double minPrice, Integer minStock) {
@@ -42,7 +61,6 @@ public class ProductService {
             predicates.add(cb.greaterThanOrEqualTo(root.get("stock_quantity"), minStock));
         }
         cq.where(predicates.toArray(new Predicate[0]));
-
         return em.createQuery(cq).getResultList();
     }
 }

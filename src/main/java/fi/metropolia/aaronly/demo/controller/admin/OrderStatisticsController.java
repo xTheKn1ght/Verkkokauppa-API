@@ -1,20 +1,20 @@
 package fi.metropolia.aaronly.demo.controller.admin;
 
-import fi.metropolia.aaronly.demo.entity.OrderCustomerView;
-import fi.metropolia.aaronly.demo.repository.OrderStatisticsRepository;
+import fi.metropolia.aaronly.demo.entity.OrderStatistics;
+import fi.metropolia.aaronly.demo.service.OrderStatisticsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/reports")
+@RequestMapping("/admin/views")
 public class OrderStatisticsController {
-    private final OrderStatisticsRepository orderStatisticsRepository;
-    public OrderStatisticsController(OrderStatisticsRepository orderStatisticsRepository) {
-        this.orderStatisticsRepository = orderStatisticsRepository;
+    private final OrderStatisticsService service;
+    public OrderStatisticsController(OrderStatisticsService service) {
+        this.service = service;
     }
     @GetMapping("/order-statistics")
-    public List<OrderCustomerView> getOrderStatistics() {
-        return orderStatisticsRepository.findAll();
+    public List<OrderStatistics> getOrderStatistics() {
+        return service.getAllStatistics();
     }
 }

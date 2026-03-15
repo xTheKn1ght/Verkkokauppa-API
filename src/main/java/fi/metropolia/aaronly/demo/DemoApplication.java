@@ -44,7 +44,7 @@ public class DemoApplication {
             /*Product product = new Product("Testing Converter", "Testing Converter", 50.0, 10);
             productRepository.save(product);*/
 
-            Product p1 = productRepository.findById(1).get();
+            /*Product p1 = productRepository.findById(1).get();
             em.clear();
             Product p2 = productRepository.findById(1).get();
 
@@ -52,7 +52,7 @@ public class DemoApplication {
             productRepository.save(p1);
 
             p2.setPrice(200.0);
-            productRepository.save(p2);
+            productRepository.save(p2);*/
         };
     }
 }

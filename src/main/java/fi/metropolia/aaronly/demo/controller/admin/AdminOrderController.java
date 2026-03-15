@@ -1,8 +1,8 @@
 package fi.metropolia.aaronly.demo.controller.admin;
 
 import fi.metropolia.aaronly.demo.entity.Order;
-import fi.metropolia.aaronly.demo.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import fi.metropolia.aaronly.demo.service.OrderService;
+import fi.metropolia.aaronly.demo.DTO.StatusUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,24 +11,29 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admin/orders")
 public class AdminOrderController {
-    private final OrderRepository orderRepository;
-    public AdminOrderController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    private final OrderService orderService;
+    public AdminOrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
-
     @GetMapping
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+        return orderService.getAllOrders();
     }
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Order> updateStatus(@PathVariable Integer id, @RequestBody String status) {
-        Optional<Order> orderOpt = orderRepository.findById(id);
-        if(orderOpt.isEmpty()) {
+    public ResponseEntity<Order> updateStatus(@PathVariable Integer id, @RequestBody StatusUpdate statusUpdate) {
+        try{
+            return ResponseEntity.ok(orderService.updateOrderStatus(id, statusUpdate.getStatus()));
+        } catch(RuntimeException e){
             return ResponseEntity.notFound().build();
         }
-        Order order = orderOpt.get();
-        order.setStatus(status);
-
-        return ResponseEntity.ok(orderRepository.save(order));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Integer id) {
+        try{
+            orderService.deleteOrder(id);
+            return ResponseEntity.noContent().build();
+        } catch(RuntimeException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 }
